@@ -10,6 +10,8 @@ client = Client()
 
 klinesT = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_1HOUR, "01 may 2021")
 
+# COUCOU
+
 df = pd.DataFrame(klinesT, columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_av', 'trades', 'tb_base_av', 'tb_quote_av', 'ignore' ])
 del df['ignore']
 del df['close_time']
