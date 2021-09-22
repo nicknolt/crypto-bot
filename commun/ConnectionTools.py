@@ -5,7 +5,7 @@ import pandas_ta as pda
 import matplotlib.pyplot as plt
 import numpy as np
 from termcolor import colored
-import typing
+from typing import List
 
 
 class Connection(object):
@@ -19,9 +19,9 @@ class Connection(object):
     def init_connection_ftx(self):
         pass
 
-    def acq_data(self):
-        klinesT = self.client_B.get_historical_klines(self.crypto, Client_Binance.KLINE_INTERVAL_15MINUTE, self.start_date)
-        print(klinesT)
+    def acq_data(self) -> List[List[str]]:
+        klinesT: List[List[str]] = self.client_B.get_historical_klines(self.crypto, Client_Binance.KLINE_INTERVAL_15MINUTE, self.start_date)
+        return klinesT
 
 
 if __name__ == '__main__':

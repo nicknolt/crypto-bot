@@ -1,18 +1,24 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import math
+import ta
+from pandas import DataFrame
 
 class ChartPlot(object):
     def __init__(self):
-        self.show = plt.show()
+        pass
 
-    def plot_charts(self):
-        figure = plt.figure(figsize=(15,4))
-        x = np.arange(0, math.pi * 2, 0.05)
-        y = np.sin(x)
-        ax = figure.add_subplot()
-        ax.plot(x, y)
-        ax.set_title("sine wave")
-        ax.set_xlabel('angle')
-        ax.set_ylabel('sine')
+    @staticmethod
+    def plot_charts(data):
+        figure = plt.figure(figsize=(20,10))
+        ax = figure.add_subplot(1,1,1)
+        ax.plot(data, color='red')
+        ax.set_title("Close Charts")
+        ax.set_xlabel('Dates')
+        ax.set_ylabel('Values')
         plt.show()
+
+    @staticmethod
+    def plot_scatter(data: DataFrame):
+        data['SMA200'] = ta.trend.sma_indicator(data['close'], 5)
+        data['SMA600'] = ta.trend.sma_indicator(data['close'], 30)
