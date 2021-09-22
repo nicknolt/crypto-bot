@@ -22,3 +22,12 @@ class ChartPlot(object):
     def plot_scatter(data: DataFrame):
         data['SMA200'] = ta.trend.sma_indicator(data['close'], 5)
         data['SMA600'] = ta.trend.sma_indicator(data['close'], 30)
+
+    def multi_plots(self):
+        figure = plt.figure(figsize=(20,10))
+        ax = figure.add_subplot(1,1,1)
+        ax.plot(data, color='red')
+        ax.set_title("Close Charts")
+        ax.set_xlabel('Dates')
+        ax.set_ylabel('Values')
+        plt.show()

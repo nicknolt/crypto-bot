@@ -1,9 +1,15 @@
 import json
 from typing import List
 import pandas as pd
+from abc import ABC, abstractmethod
 
-class SaveData(object):
+
+
+class DaoFiles(object):
     pass
+
+    def creat_files(self):
+        pass
 
 class TraitmentData(object):
     def __init__(self):
@@ -25,8 +31,8 @@ class TraitmentData(object):
         df['low'] = pd.to_numeric(df['low'])
         df['open'] = pd.to_numeric(df['open'])
 
-        df = df.set_index(df['timestamp'])
-        df.index = pd.to_datetime(df.index, unit='ms')
-        del df['timestamp']
+        # df = df.set_index(df['timestamp'])
+        # df.index = pd.to_datetime(df.index, unit='ms')
+        # del df['timestamp']
         self.data = df
         # print(df)
