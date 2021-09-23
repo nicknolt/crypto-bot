@@ -8,7 +8,7 @@ from termcolor import colored
 
 client = Client()
 
-klinesT = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_1HOUR, "01 may 2021")
+klinesT = client.get_historical_klines("BTCUSDT", Client.KLINE_INTERVAL_15MINUTE, "10 september 2021")
 
 # COUCOU
 
@@ -30,28 +30,56 @@ df = df.set_index(df['timestamp'])
 df.index = pd.to_datetime(df.index, unit='ms')
 del df['timestamp']
 print(df)
+# plt.plot(df['close'], label='Close')
+# plt.plot(df['high'])
+# plt.plot(df['low'])
+# plt.plot(df['open'])
+# plt.legend()
+# plt.show()
 
-df['SMA200'] = ta.trend.sma_indicator(df['close'], 200)
-df['SMA600'] = ta.trend.sma_indicator(df['close'], 600)
+df['SMA200'] = ta.trend.sma_indicator(df['close'], 5)
+df['SMA600'] = ta.trend.sma_indicator(df['close'], 30)
 print(df)
+# plt.plot(df['SMA200'], label='SMA 200')
+plt.scatter(df['SMA200'].index, df['SMA200'].values, color='y', label='SMA200')
+# plt.scatter(df['SMA600'].index, df['SMA600'].values, color='b', label='SMA600')
+
+plt.plot(df['SMA600'], label='SMA 600')
+plt.plot(df['close'], label='close')
+
+# plt.legend()
+# plt.show()
 
 usdt = 1000
 btc = 0
 lastIndex = df.first_valid_index()
+df_buy = pd.Series([])
+df_sell = pd.Series([])
 
 for index, row in df.iterrows():
-  if df['SMA200'][lastIndex] > df['SMA600'][lastIndex] and usdt > 10:
+  if df['SMA200'][lastIndex] < df['SMA600'][lastIndex] and usdt > 10:
     btc = usdt / df['close'][index]
     btc = btc - 0.007 * btc
     usdt = 0
     print("Buy BTC at",df['close'][index],'$ the', index)
+    df_buy.loc[index] = df['close'][index]
 
-  if df['SMA200'][lastIndex] < df['SMA600'][lastIndex] and btc > 0.0001:
+
+  if df['SMA200'][lastIndex] > df['SMA600'][lastIndex] and df['SMA200'][lastIndex] > df['close'][lastIndex] and btc > 0.0001:
     usdt = btc * df['close'][index]
     usdt = usdt - 0.007 * usdt
     btc = 0
     print("Sell BTC at",df['close'][index],'$ the', index)
+    df_sell.loc[index] = df['close'][index]
+
   lastIndex = index
+
+plt.scatter(df_buy.index, df_buy.values, color='red', label='buy')
+plt.scatter(df_sell.index, df_sell.values, color='green', label='sell')
+
+plt.legend()
+plt.show()
+
 
 finalResult = usdt + btc * df['close'].iloc[-1]
 print("Final result",finalResult,'USDT')
