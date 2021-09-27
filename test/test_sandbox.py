@@ -4,7 +4,8 @@ from typing import List
 import numpy as np
 import pandas as pd
 import ta
-from binance import Client
+from binance import Client, ThreadedWebsocketManager
+
 
 def convert(klines: List) -> pd.DataFrame:
 
@@ -88,7 +89,24 @@ class Rule:
     #     pass
 
 
-            
+class SMA:
+
+    def __init__(self):
+        pass
+
+btc_price = {'error':False}
+
+def btc_trade_history(msg):
+    ''' define how to process incoming WebSocket messages '''
+    if msg['e'] != 'error':
+        print(msg['c'])
+        btc_price['last'] = msg['c']
+        btc_price['bid'] = msg['b']
+        btc_price['last'] = msg['a']
+        btc_price['error'] = False
+    else:
+        btc_price['error'] = True
+
 
 class TestSandbox(unittest.TestCase):
 
@@ -96,6 +114,17 @@ class TestSandbox(unittest.TestCase):
         client = Client()
         klinesT = client.get_historical_klines(symbol="BTCUSDT", interval=Client.KLINE_INTERVAL_1HOUR, start_str="01 may 2021")
         print("OK")
+
+
+    def test_websocket(self):
+
+
+        bsm = ThreadedWebsocketManager()
+        bsm.start()
+
+        # subscribe to a stream
+        bsm.start_symbol_ticker_socket(callback=btc_trade_history, symbol='BTCUSDT')
+        print("kikoo")
 
     def test_convert(self):
         client = Client()
